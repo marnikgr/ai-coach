@@ -26,9 +26,13 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 
-# Production dependencies only
+# Server production dependencies
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev
+
+# MCP production dependencies
+COPY mcp/package.json mcp/package-lock.json ./mcp/
+RUN npm ci --omit=dev --prefix mcp
 
 # Server compiled output
 COPY --from=server-builder /app/dist ./dist
